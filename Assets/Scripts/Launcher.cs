@@ -28,6 +28,8 @@ public class Launcher : MonoBehaviour
     private Vector3 startBallPosition;
     private Vector3 launchDirection;
 
+    [SerializeField] private ParticleSystem exp;
+
     void Start()
     {
         startBallPosition = new Vector3(3.5f,1.1f,-7.5f);
@@ -37,6 +39,7 @@ public class Launcher : MonoBehaviour
         plungerNormalScale = plunger.transform.localScale;
 
         isCreated = false;
+        
     }
     
     void Update()
@@ -62,6 +65,9 @@ public class Launcher : MonoBehaviour
                 StopCoroutine(coroutine);
                 plunger.transform.localScale = plungerNormalScale;
                 isOnLaunch = false;
+
+
+                exp.Play();
             }
         }
     }

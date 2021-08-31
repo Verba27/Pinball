@@ -17,10 +17,7 @@ public class Ball : MonoBehaviour
     {
         if (ballRigidbody.velocity.magnitude > maxVelocity)
         {
-            
             ballRigidbody.velocity *= slowerForce;
-            
         }
     }
-
 }
