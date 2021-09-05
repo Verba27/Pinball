@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FlipperMove : MonoBehaviour
 {
+    [SerializeField] private AudioManager audio;
     [SerializeField] private Rigidbody rightFlipperRb;
     [SerializeField] private Rigidbody leftFlipperRb;
     [SerializeField] private float spinForce = 35;
@@ -32,23 +33,27 @@ public class FlipperMove : MonoBehaviour
         {
             leftUp = true;
             leftDown = false;
+            audio.PlaySound(MySounds.FlipperSound);
         }
         if (Input.GetKeyUp(KeyCode.LeftArrow))
         {
             leftUp = false;
             leftDown = true;
+            audio.PlaySound(MySounds.FlipperSound);
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             rightUp = true;
             rightDown = false;
+            audio.PlaySound(MySounds.FlipperSound);
         }
 
         if (Input.GetKeyUp(KeyCode.RightArrow))
         {
             rightUp = false;
             rightDown = true;
+            audio.PlaySound(MySounds.FlipperSound);
         }
     }
     void FixedUpdate()

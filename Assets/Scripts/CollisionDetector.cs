@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class CollisionDetector : MonoBehaviour
 {
+    [SerializeField] private MyParticlesSystems particles;
+    [SerializeField] private MyInteractions interactions;
+    [SerializeField] private ScoreValue scoreValue;
+    [SerializeField] private MyQuest quest;
+    [SerializeField] private ForceType force;
+    [SerializeField] private MySounds sound;
+
     [SerializeField]
     private Vector3 direction;
     [SerializeField] 
@@ -14,44 +21,47 @@ public class CollisionDetector : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Ball"))
         {
-            onTriggerStay?.Invoke(true);
-
+            onColl?.Invoke(true, null, force, direction, particles, interactions, 0, quest, 0);
         }
     }
     private void OnTriggerEnter(Collider collider)
     {
         if (collider.gameObject.CompareTag("Ball"))
         {
-            onTriggerEnter?.Invoke(true);
-
+            onColl?.Invoke(true, null, force, direction, particles, interactions, scoreValue, quest, sound);
         }
     }
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ball"))
         {
-            onContact?.Invoke(true);
             if (random)
             {
-                var randomizedDirection = new Vector3(Random.Range(-randDirection.x, randDirection.x), 0, Random.Range(-randDirection.z, randDirection.z));
-                onColl?.Invoke(collision, direction + randomizedDirection);
+                var randomizedDirection = new Vector3(
+                    Random.Range(-randDirection.x, randDirection.x),
+                    0,
+                    Random.Range(-randDirection.z, randDirection.z)
+                    );
+                onColl?.Invoke(true, collision, force, direction + randomizedDirection, particles, interactions, scoreValue, quest, sound);
             }
             else
             {
-                onColl?.Invoke(collision, direction);
+                onColl?.Invoke(true, collision, force, direction, particles, interactions, scoreValue, quest, sound);
             }
         }
     }
-    public delegate void TriggerStay(bool onTriggerStay);
-    public event TriggerStay onTriggerStay;
-
-    public delegate void TriggerEnter(bool onTriggerEnter);
-    public event TriggerEnter onTriggerEnter;
-
-    public delegate void Contact(bool onContact);
-    public event Contact onContact;
-
-    public delegate void Coll(Collision collision, Vector3 direction);
+    
+    public delegate void Coll(
+        bool onContact,
+        Collision collision,
+        ForceType force,
+        Vector3 direction,
+        MyParticlesSystems particles,
+        MyInteractions interactions,
+        ScoreValue scoreValue,
+        MyQuest quest,
+        MySounds sound
+        );
     public event Coll onColl;
     
 }

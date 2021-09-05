@@ -1,58 +1,64 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Launcher : MonoBehaviour
 {
-    
-    [SerializeField] private GameObject plunger;
-    private Vector3 scaleChange;
+
     [SerializeField]
     private Rigidbody launchingBall;
-    [SerializeField] private GameObject prefabBall;
-    
+    //[SerializeField]
+    //private GameObject nozzle;
     [SerializeField]
     private float hitForceMax = 10f;
     [SerializeField]
     private float chargeTimer = 2f;
     [SerializeField]
     private float hitForceCharged;
-    private Coroutine coroutine;
-    private Vector3 plungerNormalScale;
+    
     [SerializeField]
-    private bool isOnLaunch;
-
-    private bool isCreated;
-
-    public Rigidbody otherBall;
+    private ParticleSystemManager particle;
+    [SerializeField]
+    private AudioManager audio;
+    private Coroutine coroutine;
+    private bool isOnLaunchPosition;
+    private bool canCreateBall;
+    private bool multiballOn;
+    private List<GameObject[]> numberOfBalls;
+    private Rigidbody otherBall;
     private Vector3 startBallPosition;
     private Vector3 launchDirection;
-
-    [SerializeField] private ParticleSystem exp;
-
     void Start()
     {
-        startBallPosition = new Vector3(3.5f,1.1f,-7.5f);
-        isOnLaunch = false;
-        launchDirection = new Vector3(0,0,100);
-        scaleChange = new Vector3(0f, -0.005f, 0f);
-        plungerNormalScale = plunger.transform.localScale;
-
-        isCreated = false;
-        
+        startBallPosition = new Vector3(3.5f, 1.1f, -11.5f);
+        isOnLaunchPosition = false;
+        launchDirection = new Vector3(0, 0, 100);
     }
-    
+
     void Update()
     {
-        
+        GameObject[] ballInGame;
+        numberOfBalls = new List<GameObject[]>();
+        ballInGame = GameObject.FindGameObjectsWithTag("Ball");
+        numberOfBalls.Add(ballInGame);
+        if ((ballInGame.Length == 0) || multiballOn == true)
+        {
+            canCreateBall = true;
+        }
+        else
+        {
+            canCreateBall = false;
+        }
+
         if (Input.GetKey(KeyCode.R))
         {
-            if (isCreated == false)
+            if (canCreateBall == true)
             {
-                StartCoroutine(Creator());
+                otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
             }
         }
-        if (isOnLaunch == true)
+        if (isOnLaunchPosition == true)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -63,44 +69,43 @@ public class Launcher : MonoBehaviour
             {
                 otherBall.AddForce(launchDirection * hitForceCharged);
                 StopCoroutine(coroutine);
-                plunger.transform.localScale = plungerNormalScale;
-                isOnLaunch = false;
-
-
-                exp.Play();
+                isOnLaunchPosition = false;
+                audio.PlaySound(MySounds.LauncherSound);
+                particle.PlayParticles(MyParticlesSystems.LaunchSteamParticle);
             }
         }
     }
-
+    
+    public void MultiballAction()
+    {
+        StartCoroutine(MyltiballAddBall());
+    }
     void OnTriggerEnter(Collider collider)
     {
         if (collider.CompareTag("Ball"))
         {
-            isOnLaunch = true;
+            isOnLaunchPosition = true;
         }
-    }
-
-    IEnumerator Creator()
-    {
-        otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
-        isCreated = true;
-        
-        yield return new WaitForSecondsRealtime(5);
-        isCreated = false;
     }
     IEnumerator BallLaunch()
     {
         float currentChargeTime = 0;
-        
         while (currentChargeTime <= chargeTimer)
         {
             currentChargeTime += Time.deltaTime;
-            plunger.transform.localScale += scaleChange; 
             hitForceCharged = hitForceMax * (currentChargeTime / chargeTimer);
-
             yield return null;
         }
-        
-        
+    }
+    IEnumerator MyltiballAddBall()
+    {
+        otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
+        particle.PlayParticles(MyParticlesSystems.LaunchSteamParticle);
+        otherBall.AddForce(launchDirection * hitForceMax);
+        audio.PlaySound(MySounds.LauncherSound);
+        yield return new WaitForSecondsRealtime(1);
+        otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
+        particle.PlayParticles(MyParticlesSystems.LaunchSteamParticle);
+        otherBall.AddForce(launchDirection * hitForceMax);
     }
 }
