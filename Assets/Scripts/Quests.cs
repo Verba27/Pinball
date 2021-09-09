@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum MyQuest
@@ -13,7 +12,8 @@ public enum MyQuest
     LeftGate,
     MiddleGate,
     RightGate,
-    Bell
+    Bell,
+    RefresQuests
 }
 
 public class Quests : MonoBehaviour
@@ -57,6 +57,15 @@ public class Quests : MonoBehaviour
             case MyQuest.Bell:
                 StartCoroutine(BellTimer());
                 break;
+            case MyQuest.RefresQuests:
+                topTopTargetOnHit = false;
+                topLeftTargetOnHit = false;
+                topRightTargetOnHit = false;
+                wallTargetOnHit = false;
+                targetQuest = false;
+                gateQuest = false;
+                bellOnhit = false;
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(Quest), Quest, null);
         }
@@ -95,6 +104,7 @@ public class Quests : MonoBehaviour
     public delegate void MainQuest(bool onMainQuest);
     public event MainQuest onMainQuest;
 
+    
     IEnumerator LeftGateTimer()
     {
         gateLeftOnPass = true;
@@ -119,47 +129,5 @@ public class Quests : MonoBehaviour
         yield return new WaitForSecondsRealtime(20);
         bellOnhit = false;
     }
-    //// BELL ON HIT
-
-    //public void BellFinisherQuest()
-    //{
-    //    StartCoroutine(BellTimer());
-    //}
-
-
-    ////TARGETS QUEST!!!!!!!!!!!!!!!!!!!!!
-
-    //public void TopTopTargetOnHit()
-    //{
-    //    topTopTargetOnHit = true;
-    //}
-    //public void TopLeftTargetOnHit()
-    //{
-    //    topLeftTargetOnHit = true;
-    //}
-    //public void TopRightTargetOnHit()
-    //{
-    //    topRightTargetOnHit = true;
-    //}
-    //public void WallTargetOnHit()
-    //{
-    //    wallTargetOnHit = true;
-    //}
-
-    ////GATES QUEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    //public void GateLeftOnPass()
-    //{
-    //    StartCoroutine(LeftGateTimer());
-    //}
-    //public void GateMiddleOnPass()
-    //{
-    //    StartCoroutine(MiddleGateTimer());
-    //}
-    //public void GateRightOnPass()
-    //{
-    //    StartCoroutine(RightGateTimer());
-    //}
-
-
+    
 }

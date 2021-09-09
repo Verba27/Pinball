@@ -9,8 +9,7 @@ public enum ForceType
     DirectForce,
     GearForce,
     SaverForce,
-    BlockinForce,
-    Destroy
+    BlockinForce
 }
 public class ForceManager : MonoBehaviour
 {
@@ -47,20 +46,14 @@ public class ForceManager : MonoBehaviour
                 GameObject ball = GameObject.FindGameObjectWithTag("Ball");
                 ball.GetComponent<Rigidbody>().AddForce(blockFieldForce, ForceMode.VelocityChange);
                 break;
-            case ForceType.Destroy:
-                Destroy(collision.gameObject);
-                onDestroy?.Invoke(true);
-                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(force), force, null);
         }
     }
     
-    public delegate void BallDestroyed(bool onDestroy);
-    public event BallDestroyed onDestroy;
     IEnumerator SideSaveRoutine(Collision collision, Vector3 direction)
     {
-        yield return new WaitForSecondsRealtime(0.3f);
+        yield return new WaitForSecondsRealtime(0.2f);
         collision.rigidbody.AddForce(direction, ForceMode.Impulse);
     }
 }

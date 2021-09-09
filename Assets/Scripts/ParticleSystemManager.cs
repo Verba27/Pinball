@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum MyParticlesSystems
@@ -15,13 +13,11 @@ public enum MyParticlesSystems
     FallSaverRightParticle,
     ThunderLeft,
     ThunderMiddle,
-    ThunderRight
+    ThunderRight,
+    OffAllParticles
 }
-
 public class ParticleSystemManager : MonoBehaviour
 {
-
-
     [SerializeField] private ParticleSystem launchSteamParticle;
     [SerializeField] private ParticleSystem blockingSteamParticle;
     [SerializeField] private ParticleSystem wallSteamParticle;
@@ -35,8 +31,6 @@ public class ParticleSystemManager : MonoBehaviour
     [SerializeField] private ParticleSystem thunderLeft;
     [SerializeField] private ParticleSystem thunderMiddle;
     [SerializeField] private ParticleSystem thunderRight;
-
-
     public void PlayParticles(MyParticlesSystems system)
     {
         switch (system)
@@ -76,57 +70,17 @@ public class ParticleSystemManager : MonoBehaviour
             case MyParticlesSystems.ThunderRight:
                 thunderRight.Play();
                 break;
+            case MyParticlesSystems.OffAllParticles:
+                fallSaverLeftParticle.Stop();
+                fallSaverRightParticle.Stop();
+                thunderLeft.Stop();
+                thunderMiddle.Stop();
+                thunderRight.Stop();
+                blockerLeft.GetComponent<MeshCollider>().isTrigger = true;
+                blockerRight.GetComponent<MeshCollider>().isTrigger = true;
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(system), system, null);
         }
-
-
     }
-
-
-
-//    public void BlockingFieldOn()
-//    {
-//        blockingSteamParticle.Play();
-//    }
-//    public void SparkParticleOn()
-//    {
-//        sparksParticle.Play();
-//    }
-//    public void WallSteamOn()
-//    {
-//        wallSteamParticle.Play();
-//    }
-//    public void AngleSteamOn()
-//    {
-//        leftAngle.Play();
-//        rightAngle.Play();
-//    }
-//    public void FallSaverLeftParticleOn()
-//    {
-//        fallSaverLeftParticle.Play();
-//        blockerLeft.GetComponent<MeshCollider>().isTrigger = false;
-//    }
-//    public void FallSaverRightParticleOn()
-//    {
-//        fallSaverRightParticle.Play();
-//        blockerRight.GetComponent<MeshCollider>().isTrigger = false;
-//    }
-
-//    public void ThunderLeftOn()
-//    {
-//        thunderLeft.Play();
-//    }
-//    public void ThunderMiddleOn()
-//    {
-//        thunderMiddle.Play();
-//    }
-//    public void ThunderRightOn()
-//    {
-//        thunderRight.Play();
-//    }
-
-
-
-
 }

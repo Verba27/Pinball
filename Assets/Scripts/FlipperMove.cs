@@ -1,21 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FlipperMove : MonoBehaviour
 {
-    [SerializeField] private AudioManager audio;
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private Rigidbody rightFlipperRb;
     [SerializeField] private Rigidbody leftFlipperRb;
     [SerializeField] private float spinForce = 35;
     private Vector3 rightAngleVelocity;
     private Vector3 leftAngleVelocity;
 
-    private bool leftUp;
-    private bool leftDown;
-    private bool rightUp;
-    private bool rightDown;
-
+    private bool leftFlipper;
+    private bool rightFlipper;
+    
     private Quaternion startLeftQuaternion;
     private Quaternion leftQuaternion;
     private Quaternion startRightQuaternion;
@@ -27,55 +23,48 @@ public class FlipperMove : MonoBehaviour
         rightAngleVelocity = new Vector3(0, 70, 0);
         leftAngleVelocity = new Vector3(0, -70, 0);
     }
-    void Update()
+
+    public void OnLeftUp()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            leftUp = true;
-            leftDown = false;
-            audio.PlaySound(MySounds.FlipperSound);
-        }
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            leftUp = false;
-            leftDown = true;
-            audio.PlaySound(MySounds.FlipperSound);
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            rightUp = true;
-            rightDown = false;
-            audio.PlaySound(MySounds.FlipperSound);
-        }
-
-        if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            rightUp = false;
-            rightDown = true;
-            audio.PlaySound(MySounds.FlipperSound);
-        }
+        leftFlipper = false;
+        audioManager.PlaySound(MySounds.FlipperSound);
     }
+    public void OnLeftDown()
+    {
+        leftFlipper = true;
+        audioManager.PlaySound(MySounds.FlipperSound);
+    }
+    public void OnRightUp()
+    {
+        rightFlipper = false;
+        audioManager.PlaySound(MySounds.FlipperSound);
+    }
+    public void OnRightDown()
+    {
+        rightFlipper = true;
+        audioManager.PlaySound(MySounds.FlipperSound);
+    }
+    
     void FixedUpdate()
     {
-        if (leftUp)
+        if (leftFlipper)
         {
             leftQuaternion = Quaternion.Lerp(leftQuaternion, Quaternion.Euler(leftAngleVelocity), Time.fixedDeltaTime * spinForce);
             leftFlipperRb.MoveRotation(startLeftQuaternion * leftQuaternion);
         }
 
-        if (leftDown)
+        if (leftFlipper == false)
         {
             leftQuaternion = Quaternion.Lerp(leftQuaternion, Quaternion.identity, Time.fixedDeltaTime * spinForce);
             leftFlipperRb.MoveRotation(startLeftQuaternion * leftQuaternion);
         }
-        if (rightUp)
+        if (rightFlipper)
         {
             rightQuaternion = Quaternion.Lerp(rightQuaternion, Quaternion.Euler(rightAngleVelocity), Time.fixedDeltaTime * spinForce);
             rightFlipperRb.MoveRotation(startRightQuaternion * rightQuaternion);
         }
 
-        if (rightDown)
+        if (rightFlipper == false)
         {
             rightQuaternion = Quaternion.Lerp(rightQuaternion, Quaternion.identity, Time.fixedDeltaTime * spinForce);
             rightFlipperRb.MoveRotation(startRightQuaternion * rightQuaternion);

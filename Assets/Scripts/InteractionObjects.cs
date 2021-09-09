@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum MyInteractions
@@ -13,7 +12,8 @@ public enum MyInteractions
     SwitchLeft,
     SwitchRight,
     Bell,
-    AllTargetsBackOn
+    AllTargetsBackOn,
+    AllObjectsBackOn
 }
 
 public class InteractionObjects : MonoBehaviour
@@ -56,6 +56,14 @@ public class InteractionObjects : MonoBehaviour
             case MyInteractions.AllTargetsBackOn:
                 StartCoroutine(TargetsBackOn());
                 break;
+            case MyInteractions.AllObjectsBackOn:
+                targetTopTop.SetActive(true);
+                targetTopLeft.SetActive(true);
+                targetTopRight.SetActive(true);
+                targetWall.SetActive(true);
+                switchLeft.SetActive(false);
+                switchRight.SetActive(false);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(obj), obj, null);
         }
@@ -68,38 +76,5 @@ public class InteractionObjects : MonoBehaviour
         targetTopRight.SetActive(true);
         targetWall.SetActive(true);
     }
-    //public void TargetTopTopDisable()
-    //{
-    //    targetTopTop.SetActive(false);
-    //}
-    //public void TargetTopLeftDisable()
-    //{
-    //    targetTopLeft.SetActive(false);
-    //}
-    //public void TargetTopRightDisable()
-    //{
-    //    targetTopRight.SetActive(false);
-    //}
-    //public void TargetWallDisable()
-    //{
-    //    targetWall.SetActive(false);
-    //}
-    //public void BellMove()
-    //{
-    //    bell.Play();
-    //}
-
-    //public void SwitchLeftActive()
-    //{
-    //    switchLeft.SetActive(true);
-    //}
-    //public void SwitchRightActive()
-    //{
-    //    switchRight.SetActive(true);
-    //}
-    //public void AllTargetsEnable()
-    //{
-    //    StartCoroutine(TargetsBackOn());
-    //}
-
+    
 }

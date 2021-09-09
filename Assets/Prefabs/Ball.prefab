@@ -34074,6 +34074,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballRigidbody: {fileID: 255181302222822019}
-  maxVelocity: 25
+  maxVelocity: 28
   slowerForce: 0.9
   current: 0

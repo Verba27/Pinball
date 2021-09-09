@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -13,10 +11,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private InteractionObjects interactionObjects;
     [SerializeField] private Quests quests;
     [SerializeField] private Launcher launcher;
+    [SerializeField] private Destroyer destroy;
 
     [SerializeField] private CollisionDetector[] bumperTapes;
+    private int ballsRemain = 3;
+    private int lives = 3;
+    private int currentScore;
 
-    private int lives;
     void Start()
     {
         for (int i = 0; i < bumperTapes.Length; i++)
@@ -27,40 +28,101 @@ public class GameManager : MonoBehaviour
         quests.hitAllTargets += AllTargetsQuestDone;
         quests.passAllGates += AllGatesPassQuestDone;
         quests.onMainQuest += MainQuestDone;
-        forceManager.onDestroy += BallLost;
-
-
-        lives = 3;
-
+        destroy.onDestroy += BallLost;
+        launcher.ballCreated += AddBallInGame;
+        
+        uiManager.UpdadeUI(MyUI.MainMenuUI);
     }
-
+    
     void Update()
     {
-        if (lives == 3)
+        if (lives == 0)
         {
             EndGame();
         }
     }
     public void StartGame()
     {
-        Time.timeScale = 1;
+        GameObject ball = GameObject.FindWithTag("Ball");
+        DestroyImmediate(ball);
+        uiManager.UpdadeUI(MyUI.GameplayUI);
+        uiManager.UpdateGameScore(0);
+        uiManager.RemainingBalls(3);
+        interactionObjects.DoInteraction(MyInteractions.AllObjectsBackOn);
+        scoreCounter.DeleteScore();
+        //currentScore = 0;
+        ballsRemain = 3;
         lives = 3;
-        
+        Time.timeScale = 1;
+    }
+    public void MainMenu()
+    {
+        uiManager.UpdadeUI(MyUI.MainMenuUI);
+        //Time.timeScale = 1;
+        Debug.Log("hi");
+    }
+    public void SettingsMenu()
+    {
+        uiManager.UpdadeUI(MyUI.SettingMenuUI);
+    }
+    public void ShopMenu()
+    {
+        uiManager.UpdadeUI(MyUI.ShopMenuUI);
+    }
+    public void BackFromSettingsMenu()
+    {
+        uiManager.UpdadeUI(MyUI.ExitSettings);
+    }
+    public void BackFromShopMenu()
+    {
+        uiManager.UpdadeUI(MyUI.ExitShop);
+    }
+    public void Exit()
+    {
+        Application.Quit();
     }
 
+    public void ResumeGame()
+    {
+        uiManager.UpdadeUI(MyUI.GameplayUI);
+        Time.timeScale = 1;
+    }
     public void EndGame()
     {
-        //Time.timeScale = 0;
-    }
-    
-    private void BallLost(bool ondestroy)
-    {
-        lives--;
+        uiManager.UpdadeUI(MyUI.PauseGameOverUI);
+        Time.timeScale = 0;
     }
 
-    private void ScoreInfo(int scoreCurrent)
+    public void Restart()
     {
-        Debug.Log(scoreCurrent);
+        GameObject ball = GameObject.FindWithTag("Ball");
+        DestroyImmediate(ball);
+        uiManager.UpdadeUI(MyUI.GameplayUI);
+        uiManager.UpdateGameScore(0);
+        uiManager.RemainingBalls(3);
+        interactionObjects.DoInteraction(MyInteractions.AllObjectsBackOn);
+        scoreCounter.DeleteScore();
+        ballsRemain = 3;
+        lives = 3;
+        Time.timeScale = 1;
+    }
+    private void AddBallInGame(bool ballcreated)
+    {
+        ballsRemain--;
+    }
+    private void BallLost(bool onDestroy)
+    {
+        lives--;
+        particleManager.PlayParticles(MyParticlesSystems.OffAllParticles);
+        interactionObjects.DoInteraction(MyInteractions.AllObjectsBackOn);
+        audioManager.PlaySound(MySounds.DestroySound);
+        quests.QuestCompliter(MyQuest.RefresQuests);
+    }
+    private void ScoreInfo(int scoreThisSession)
+    {
+        currentScore = scoreThisSession;
+        uiManager.UpdateGameScore(currentScore);
+        uiManager.RemainingBalls(ballsRemain);
     }
     
     private void BumpCollision(bool onContact, Collision collision, ForceType force, Vector3 direction,
@@ -72,7 +134,6 @@ public class GameManager : MonoBehaviour
         particleManager.PlayParticles(particles);
         interactionObjects.DoInteraction(interactions);
         audioManager.PlaySound(sound);
-        //sound
     }
     private void AllTargetsQuestDone(bool hitAllTargets)
     {
@@ -94,139 +155,4 @@ public class GameManager : MonoBehaviour
         lives = lives+2;
         audioManager.PlaySound(MySounds.MainQuestSound);
     }
-
-
-
-    //private void BumpCylinderCollision(bool onContact, Collision collision, ForceType force, Vector3 direction,
-    //    MyParticlesSystems particles, MyInteractions interactions, ScoreValue scoreValue, MyQuest quest)
-    //{
-    //    forceManager.DoForce(force, collision, direction);
-    //    scoreCounter.ScoreAdding(scoreValue);
-    //    //sound
-    //}
-    //private void BlockingFieldCollision(bool onTrigger)
-    //{
-    //    //forceManager.BlockingFieldForce();
-    //    particleManager.PlayParticles(MyParticlesSystems.BlockingSteamParticle);
-    //    //sound
-    //}
-    //private void SideSaverLeft(Collision collision, Vector3 direction, MyParticlesSystems particles)
-    //{
-    //    forceManager.SideSaver(collision, direction);
-    //    particleManager.PlayParticles(particles);
-    //    //particleManager.FallSaverLeftParticleOn();
-    //    //interactionObjects.SwitchLeftActive();
-    //    interactionObjects.DoInteraction(MyInteractions.SwitchLeft);
-    //    //sound
-    //}
-    //private void SideSaverRight(Collision collision, Vector3 direction, MyParticlesSystems particles)
-    //{
-    //    forceManager.SideSaver(collision, direction);
-    //    particleManager.PlayParticles(particles);
-    //    //particleManager.FallSaverRightParticleOn();
-    //    interactionObjects.DoInteraction(MyInteractions.SwitchRight);
-    //    //interactionObjects.SwitchRightActive();
-    //    //sound
-    //}
-    //private void WallCollision(Collision collision, Vector3 direction, MyParticlesSystems particles)
-    //{
-    //    forceManager.DirectForce(collision, direction);
-    //    particleManager.PlayParticles(particles);
-    //    //particleManager.WallSteamOn();
-    //    //sound
-    //}
-    //private void MainBumperCollision(Collision collision, Vector3 direction, MyParticlesSystems particles, ScoreValue scoreValue)
-    //{
-    //    forceManager.DirectForce(collision, direction);
-    //    scoreCounter.ScoreAdding(scoreValue);
-    //    //scoreCounter.GameScoreMainBumpers(true);
-    //    //sound
-    //}
-    //private void PyramidCollision(Collision collision, Vector3 direction, MyParticlesSystems particles)
-    //{
-    //    forceManager.DirectForce(collision, direction);
-    //    //sound
-    //}
-    //private void SparksCollision(Collision collision, Vector3 direction, MyParticlesSystems particles)
-    //{
-    //    forceManager.DirectForce(collision, direction);
-    //    particleManager.PlayParticles(particles);
-    //    //particleManager.SparkParticleOn();
-    //    scoreCounter.GameScoreSparks(true);
-    //    //sound
-    //}
-    //private void LeftGatePass(bool onTriggerEnter, ScoreValue scoreValue)
-    //{
-    //    scoreCounter.ScoreAdding(ScoreValue.Gates);
-    //    particleManager.PlayParticles(MyParticlesSystems.ThunderLeft);
-    //    //particleManager.ThunderLeftOn();
-    //    quests.GateLeftOnPass();
-
-    //    //sound?
-    //}
-    //private void MiddleGatePass(bool onTriggerEnter, ScoreValue scoreValue)
-    //{
-    //    scoreCounter.ScoreAdding(ScoreValue.Gates);
-    //    particleManager.PlayParticles(MyParticlesSystems.ThunderMiddle);
-    //    //particleManager.ThunderMiddleOn();
-    //    quests.GateMiddleOnPass();
-
-    //    //sound?
-    //}
-    //private void RightGatePass(bool onTriggerEnter, ScoreValue scoreValue)
-    //{
-
-    //    scoreCounter.ScoreAdding(ScoreValue.Gates);
-    //    particleManager.PlayParticles(MyParticlesSystems.ThunderRight);
-    //    //particleManager.ThunderRightOn();
-    //    quests.GateRightOnPass();
-
-    //    //sound?
-    //}
-    //private void TargetTopTopHit(bool onContact, ScoreValue scoreValue)
-    //{
-    //    scoreCounter.ScoreAdding(ScoreValue.Targets);
-    //    interactionObjects.DoInteraction(MyInteractions.TargetTopTop);
-    //    //interactionObjects.TargetTopTopDisable();
-    //    quests.TopTopTargetOnHit();
-    //    //sound?
-    //}
-
-    //private void TargetTopLeftHit(bool onContact, ScoreValue scoreValue)
-    //{
-    //    scoreCounter.ScoreAdding(ScoreValue.Targets);
-    //    interactionObjects.DoInteraction(MyInteractions.TargetTopLeft);
-    //    //interactionObjects.TargetTopLeftDisable();
-    //    quests.TopLeftTargetOnHit();
-    //    //sound?
-    //}
-
-    //private void TargetTopRightHit(bool onContact, ScoreValue scoreValue)
-    //{
-    //    scoreCounter.ScoreAdding(ScoreValue.Targets);
-    //    interactionObjects.DoInteraction(MyInteractions.TargetTopRight);
-    //    //interactionObjects.TargetTopRightDisable();
-    //    quests.TopRightTargetOnHit();
-    //    //sound?
-    //}
-
-    //private void TargetWallHit(bool onContact, ScoreValue scoreValue)
-    //{
-    //    scoreCounter.ScoreAdding(ScoreValue.Targets);
-    //    interactionObjects.DoInteraction(MyInteractions.TargetWall);
-    //    //interactionObjects.TargetWallDisable();
-    //    quests.WallTargetOnHit();
-    //    //sound?
-    //}
-    //private void DingDong(bool onTriggerEnter, ScoreValue scoreValue)
-    //{
-
-    //    scoreCounter.ScoreAdding(ScoreValue.Bell);
-    //    interactionObjects.DoInteraction(MyInteractions.Bell);
-    //    //interactionObjects.BellMove();
-    //    quests.BellFinisherQuest();
-
-    //    //sound?
-    //}
-
 }

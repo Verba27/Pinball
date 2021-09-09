@@ -14,6 +14,5 @@ public class Destroyer : MonoBehaviour
     }
 
     public delegate void BallDestroyed(bool onDestroy);
-
     public event BallDestroyed onDestroy;
 }

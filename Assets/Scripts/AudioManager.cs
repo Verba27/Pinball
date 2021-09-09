@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum MySounds
@@ -87,7 +85,7 @@ public class AudioManager : MonoBehaviour
                 audioSource.PlayOneShot(mainQuestClip);
                 break;
             case MySounds.DestroySound:
-                audioSource.PlayOneShot(mainQuestClip);
+                audioSource.PlayOneShot(destroyClip);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(sounds), sounds, null);

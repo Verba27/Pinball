@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 9db99a0bb513b5844afb4b420e3c31f6
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Glametrix
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 274205c10583fac47969b4128a1e3e96, type: 3}
+  - {fileID: 12800000, guid: 53bb0b2f2ed3a5446805e32b2b1ee8cd, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
