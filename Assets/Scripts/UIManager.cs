@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject SettingsMenuUI;
     [SerializeField] private GameObject ShopMenuUI;
     [SerializeField] private GameObject GameplayUI;
+    [SerializeField] private GameObject InstructionsUI;
     [SerializeField] private GameObject PauseGameOverUI;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI ballCounterText;
@@ -33,6 +34,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float durationMenuRotation = 0.5f;
     private Coroutine coroutine;
     private bool isPlaying = false;
+    private bool readInstructions = false;
     
     public void UpdadeUI(MyUI doUI)
     {
@@ -47,6 +49,7 @@ public class UIManager : MonoBehaviour
                 MainMenuUI.SetActive(true);
                 SettingsMenuUI.SetActive(false);
                 ShopMenuUI.SetActive(false);
+                InstructionsUI.SetActive(false);
                 GameplayUI.SetActive(false);
                 mainCamera.transform.rotation = Quaternion.Euler(165, 180, -180);
                 PauseGameOverUI.SetActive(false);
@@ -66,19 +69,29 @@ public class UIManager : MonoBehaviour
                 coroutine = StartCoroutine(EnterShop());
                 break;
             case MyUI.GameplayUI:
-                if (coroutine != null)
+                if (readInstructions == false)
                 {
-                    StopCoroutine(coroutine);
+                    MainMenuUI.SetActive(false);
+                    InstructionsUI.SetActive(true);
+                    readInstructions = true;
                 }
-                MainMenuUI.SetActive(false);
-                SettingsMenuUI.SetActive(false);
-                ShopMenuUI.SetActive(false);
-                GameplayUI.SetActive(true);
-                PauseGameOverUI.SetActive(false);
-                if (isPlaying == false)
+                else
                 {
-                    coroutine = StartCoroutine(StartGameCameraPosition());
+                    if (coroutine != null)
+                    {
+                        StopCoroutine(coroutine);
+                    }
+                    InstructionsUI.SetActive(false);
+                    MainMenuUI.SetActive(false);
+                    GameplayUI.SetActive(true);
+                    PauseGameOverUI.SetActive(false);
+                    if (isPlaying == false)
+                    {
+                        coroutine = StartCoroutine(StartGameCameraPosition());
+                    }
                 }
+                
+                
                 break;
             case MyUI.PauseGameOverUI:
                 MainMenuUI.SetActive(false);
@@ -120,6 +133,7 @@ public class UIManager : MonoBehaviour
         float startTime = 0;
         while (startTime < durationMenuRotation)
         {
+            MainMenuUI.SetActive(true);
             startTime += Time.deltaTime;
             mainMenuCanvas.transform.rotation = Quaternion.Lerp(startRotation, gameRotation, (startTime / durationMenuRotation));
             SettingsMenuUI.SetActive(true);

@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
     public void MainMenu()
     {
         uiManager.UpdadeUI(MyUI.MainMenuUI);
-        //Time.timeScale = 1;
+        Time.timeScale = 1;
         Debug.Log("hi");
     }
     public void SettingsMenu()
