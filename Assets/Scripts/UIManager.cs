@@ -26,6 +26,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI ballCounterText;
     [SerializeField] private TextMeshProUGUI endGameScoreText;
+    [SerializeField] private TextMeshProUGUI bestScoreStatText;
+    [SerializeField] private TextMeshProUGUI gamesPlayedStatText;
     [SerializeField] private Image mainMenuCanvas;
     [SerializeField] private Image settingsCanvas;
     [SerializeField] private Image shopCanvas;
@@ -41,18 +43,21 @@ public class UIManager : MonoBehaviour
         switch (doUI)
         {
             case MyUI.MainMenuUI:
+                MainMenuUI.SetActive(true);
+                PauseGameOverUI.SetActive(false);
+                ShopMenuUI.SetActive(false);
+                SettingsMenuUI.SetActive(false);
+                InstructionsUI.SetActive(false);
+                GameplayUI.SetActive(false);
+                PauseGameOverUI.SetActive(false);
+                mainCamera.transform.rotation = Quaternion.Euler(165, 180, -180);
+                
                 isPlaying = false;
                 if (coroutine != null)
                 {
                     StopCoroutine(coroutine);
                 }
-                MainMenuUI.SetActive(true);
-                SettingsMenuUI.SetActive(false);
-                ShopMenuUI.SetActive(false);
-                InstructionsUI.SetActive(false);
-                GameplayUI.SetActive(false);
-                mainCamera.transform.rotation = Quaternion.Euler(165, 180, -180);
-                PauseGameOverUI.SetActive(false);
+
                 break;
             case MyUI.SettingMenuUI:
                 if (coroutine != null)
@@ -91,7 +96,6 @@ public class UIManager : MonoBehaviour
                     }
                 }
                 
-                
                 break;
             case MyUI.PauseGameOverUI:
                 MainMenuUI.SetActive(false);
@@ -124,6 +128,7 @@ public class UIManager : MonoBehaviour
             mainCamera.transform.rotation = Quaternion.Lerp(startRotation,gameRotation,(startTime/durationCameraRotation));
             yield return null;
         }
+        new WaitForSecondsRealtime(durationCameraRotation);
         isPlaying = true;
     }
     IEnumerator EnterSettings()
@@ -187,6 +192,12 @@ public class UIManager : MonoBehaviour
             yield return null;
         }
         ShopMenuUI.SetActive(false);
+    }
+
+    public void UpdateStatistics(int bestScore, int gamesPlayed)
+    {
+        bestScoreStatText.text = bestScore.ToString();
+        gamesPlayedStatText.text = gamesPlayed.ToString();
     }
     public void UpdateGameScore(int currentScore)
     {

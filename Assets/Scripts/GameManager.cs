@@ -18,8 +18,21 @@ public class GameManager : MonoBehaviour
     private int lives = 3;
     private int currentScore;
 
+    private int gamesCounter;
+    private int bestScore;
+    private string STATS_KEY = "stats_key";
+    private string GAMES_KEY = "games_key";
+
+    void Awake()
+    {
+        gamesCounter = PlayerPrefs.GetInt(GAMES_KEY, gamesCounter);
+        bestScore = PlayerPrefs.GetInt(STATS_KEY, bestScore);
+        Debug.Log($"bestScore = {bestScore}");
+        Debug.Log($"GamesPlayed = {gamesCounter}");
+    }
     void Start()
     {
+        
         for (int i = 0; i < bumperTapes.Length; i++)
         {
             bumperTapes[i].onColl += BumpCollision;
@@ -38,6 +51,10 @@ public class GameManager : MonoBehaviour
     {
         if (lives == 0)
         {
+            if (bestScore < currentScore)
+            {
+                bestScore = currentScore;
+            }
             EndGame();
         }
     }
@@ -58,6 +75,7 @@ public class GameManager : MonoBehaviour
     public void MainMenu()
     {
         uiManager.UpdadeUI(MyUI.MainMenuUI);
+        lives = 3;
         Time.timeScale = 1;
         Debug.Log("hi");
     }
@@ -68,6 +86,7 @@ public class GameManager : MonoBehaviour
     public void ShopMenu()
     {
         uiManager.UpdadeUI(MyUI.ShopMenuUI);
+        uiManager.UpdateStatistics(bestScore, gamesCounter);
     }
     public void BackFromSettingsMenu()
     {
@@ -90,7 +109,11 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         uiManager.UpdadeUI(MyUI.PauseGameOverUI);
+        gamesCounter++;
         Time.timeScale = 0;
+        PlayerPrefs.SetInt(GAMES_KEY, gamesCounter);
+        PlayerPrefs.SetInt(STATS_KEY, bestScore);
+        PlayerPrefs.Save();
     }
 
     public void Restart()

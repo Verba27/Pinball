@@ -14,6 +14,7 @@ public class Launcher : MonoBehaviour
     [SerializeField]
     private AudioManager audioManager;
     private Coroutine coroutine;
+    private bool isPlaying;
     private bool isOnLaunchPosition;
     private bool canCreateBall;
     private bool multiballOn;
@@ -49,7 +50,12 @@ public class Launcher : MonoBehaviour
 
     public void GiveBall()
     {
-        if(canCreateBall == true)
+        if (isPlaying == false)
+        {
+            coroutine = StartCoroutine(WaitforStart());
+
+        }
+        if(canCreateBall == true && isPlaying == true)
         {
             otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
             ballCreated?.Invoke(true);
@@ -88,5 +94,11 @@ public class Launcher : MonoBehaviour
         otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
         particle.PlayParticles(MyParticlesSystems.LaunchSteamParticle);
         otherBall.AddForce(launchDirection * hitForceMax);
+    }
+
+    IEnumerator WaitforStart()
+    {
+        yield return new WaitForSecondsRealtime(1);
+        isPlaying = true;
     }
 }
