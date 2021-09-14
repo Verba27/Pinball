@@ -86,18 +86,6 @@ public class ScoreCounter : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException(nameof(score), score, null);
         }
-        onScore?.Invoke(scoreThisSession);
-    }
-
-    public void DeleteScore()
-    {
-        scoreThisSession = 0;
-    }
-    public delegate void Scored(int scoreThisSession);
-    public event Scored onScore;
-
-    void Update()
-    {
         if (scoreThisSession > firstBonusTreshold)
         {
             scoreNormalizer = 1.2f;
@@ -111,5 +99,13 @@ public class ScoreCounter : MonoBehaviour
         {
             scoreNormalizer = 2f;
         }
+        onScore?.Invoke(scoreThisSession);
     }
+
+    public void DeleteScore()
+    {
+        scoreThisSession = 0;
+    }
+    public delegate void Scored(int scoreThisSession);
+    public event Scored onScore;
 }

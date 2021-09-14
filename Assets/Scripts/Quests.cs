@@ -18,15 +18,17 @@ public enum MyQuest
 
 public class Quests : MonoBehaviour
 {
-    [SerializeField]
-    private bool topTopTargetOnHit, topLeftTargetOnHit, topRightTargetOnHit, wallTargetOnHit;
-    private bool gateLeftOnPass, gateMiddleOnPass, gateRightOnPass;
-    [SerializeField]
+    private bool topTopTargetOnHit;
+    private bool topLeftTargetOnHit;
+    private bool topRightTargetOnHit;
+    private bool wallTargetOnHit;
+    private bool gateLeftOnPass;
+    private bool gateMiddleOnPass;
+    private bool gateRightOnPass;
     private bool bellOnhit;
-    [SerializeField]
-    private bool targetQuest, gateQuest;
-
-
+    private bool targetQuest;
+    private bool gateQuest;
+    
     public void QuestCompliter(MyQuest Quest)
     {
         switch (Quest)
@@ -70,9 +72,9 @@ public class Quests : MonoBehaviour
                 throw new ArgumentOutOfRangeException(nameof(Quest), Quest, null);
         }
     }
-    void Update()
+    public void Update()
     {
-        if (topLeftTargetOnHit && topRightTargetOnHit && topTopTargetOnHit && wallTargetOnHit == true)
+        if (topLeftTargetOnHit && topRightTargetOnHit && topTopTargetOnHit && wallTargetOnHit)
         {
             targetQuest = true;
             hitAllTargets?.Invoke(true);
@@ -81,7 +83,7 @@ public class Quests : MonoBehaviour
             topRightTargetOnHit = false;
             wallTargetOnHit = false;
         }
-        if (gateLeftOnPass & gateMiddleOnPass & gateRightOnPass == true)
+        if (gateLeftOnPass & gateMiddleOnPass & gateRightOnPass)
         {
             gateQuest = true;
             passAllGates?.Invoke(true);
@@ -89,7 +91,7 @@ public class Quests : MonoBehaviour
             gateMiddleOnPass = false;
             gateRightOnPass = false;
         }
-        if (targetQuest & gateQuest & bellOnhit == true)
+        if (targetQuest & gateQuest & bellOnhit)
         {
             onMainQuest?.Invoke(true);
             targetQuest = false;
@@ -105,28 +107,28 @@ public class Quests : MonoBehaviour
     public event MainQuest onMainQuest;
 
     
-    IEnumerator LeftGateTimer()
+    public IEnumerator LeftGateTimer()
     {
         gateLeftOnPass = true;
-        yield return new WaitForSecondsRealtime(10);
+        yield return new WaitForSeconds(10);
         gateLeftOnPass = false;
     }
-    IEnumerator MiddleGateTimer()
+    public IEnumerator MiddleGateTimer()
     {
         gateMiddleOnPass = true;
-        yield return new WaitForSecondsRealtime(10);
+        yield return new WaitForSeconds(10);
         gateMiddleOnPass = false;
     }
-    IEnumerator RightGateTimer()
+    public IEnumerator RightGateTimer()
     {
         gateRightOnPass = true;
-        yield return new WaitForSecondsRealtime(10);
+        yield return new WaitForSeconds(10);
         gateRightOnPass = false;
     }
-    IEnumerator BellTimer()
+    public IEnumerator BellTimer()
     {
         bellOnhit = true;
-        yield return new WaitForSecondsRealtime(20);
+        yield return new WaitForSeconds(20);
         bellOnhit = false;
     }
     

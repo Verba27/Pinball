@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum ForceType
@@ -51,7 +50,7 @@ public class ForceManager : MonoBehaviour
         }
     }
     
-    IEnumerator SideSaveRoutine(Collision collision, Vector3 direction)
+    public IEnumerator SideSaveRoutine(Collision collision, Vector3 direction)
     {
         yield return new WaitForSecondsRealtime(0.2f);
         collision.rigidbody.AddForce(direction, ForceMode.Impulse);

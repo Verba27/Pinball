@@ -68,7 +68,7 @@ public class InteractionObjects : MonoBehaviour
                 throw new ArgumentOutOfRangeException(nameof(obj), obj, null);
         }
     }
-    IEnumerator TargetsBackOn()
+    public IEnumerator TargetsBackOn()
     {
         yield return new WaitForSecondsRealtime(10);
         targetTopTop.SetActive(true);

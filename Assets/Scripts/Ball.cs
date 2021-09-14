@@ -9,11 +9,11 @@ public class Ball : MonoBehaviour
     [SerializeField] private float slowerForce = 0.8f;
     [SerializeField] private float current;
 
-    void Update()
+    public void Update()
     {
         current = ballRigidbody.velocity.magnitude;
     }
-    void FixedUpdate()
+    public void FixedUpdate()
     {
         if (ballRigidbody.velocity.magnitude > maxVelocity)
         {

@@ -21,7 +21,6 @@ public enum MySounds
 public class AudioManager : MonoBehaviour
 {
     private AudioSource audioSource;
-    //[SerializeField] private AudioSource audioController;
     [SerializeField] private AudioClip launcherClip;
     [SerializeField] private AudioClip gateClip;
     [SerializeField] private AudioClip gearClip;
@@ -39,7 +38,6 @@ public class AudioManager : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        //currentSound = null;
     }
     
     public void PlaySound(MySounds sounds)

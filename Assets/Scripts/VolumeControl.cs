@@ -1,18 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class VolumeControl : MonoBehaviour
 {
-    [SerializeField] string volumeParameter = "LevelVolume";
+    [SerializeField] 
+    private string volumeParameter = "LevelVolume";
     [SerializeField]
-    AudioMixer mixer;
+    private AudioMixer mixer;
     [SerializeField]
-    Slider slider;
-    
-    [SerializeField] float multiplier = 30f;
+    private Slider slider;
+    [SerializeField] 
+    private float multiplier = 30f;
 
     private void Awake()
     {
@@ -24,7 +23,7 @@ public class VolumeControl : MonoBehaviour
         mixer.SetFloat(volumeParameter, Mathf.Log10(value) * multiplier);
     }
 
-    void Start()
+    public void Start()
     {
         slider.value = PlayerPrefs.GetFloat(volumeParameter, slider.value);
     }

@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private UIManager uiManager;
@@ -14,7 +13,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Destroyer destroy;
 
     [SerializeField] private CollisionDetector[] bumperTapes;
-    private int ballsRemain = 3;
+    
+    private int ballsRemain = 2;
     private int lives = 3;
     private int currentScore;
 
@@ -23,16 +23,15 @@ public class GameManager : MonoBehaviour
     private string STATS_KEY = "stats_key";
     private string GAMES_KEY = "games_key";
 
-    void Awake()
+    public void Awake()
     {
         gamesCounter = PlayerPrefs.GetInt(GAMES_KEY, gamesCounter);
         bestScore = PlayerPrefs.GetInt(STATS_KEY, bestScore);
         Debug.Log($"bestScore = {bestScore}");
         Debug.Log($"GamesPlayed = {gamesCounter}");
     }
-    void Start()
+    public void Start()
     {
-        
         for (int i = 0; i < bumperTapes.Length; i++)
         {
             bumperTapes[i].onColl += BumpCollision;
@@ -43,41 +42,27 @@ public class GameManager : MonoBehaviour
         quests.onMainQuest += MainQuestDone;
         destroy.onDestroy += BallLost;
         launcher.ballCreated += AddBallInGame;
-        
         uiManager.UpdadeUI(MyUI.MainMenuUI);
     }
     
-    void Update()
-    {
-        if (lives == 0)
-        {
-            if (bestScore < currentScore)
-            {
-                bestScore = currentScore;
-            }
-            EndGame();
-        }
-    }
     public void StartGame()
     {
-        GameObject ball = GameObject.FindWithTag("Ball");
-        DestroyImmediate(ball);
+        ballsRemain = 3;
         uiManager.UpdadeUI(MyUI.GameplayUI);
         uiManager.UpdateGameScore(0);
-        uiManager.RemainingBalls(3);
+        uiManager.RemainingBalls(ballsRemain);
         interactionObjects.DoInteraction(MyInteractions.AllObjectsBackOn);
         scoreCounter.DeleteScore();
-        //currentScore = 0;
-        ballsRemain = 3;
         lives = 3;
         Time.timeScale = 1;
     }
     public void MainMenu()
     {
+        GameObject ball = GameObject.FindWithTag("Ball");
+        Destroy(ball);
         uiManager.UpdadeUI(MyUI.MainMenuUI);
         lives = 3;
         Time.timeScale = 1;
-        Debug.Log("hi");
     }
     public void SettingsMenu()
     {
@@ -119,15 +104,8 @@ public class GameManager : MonoBehaviour
     public void Restart()
     {
         GameObject ball = GameObject.FindWithTag("Ball");
-        DestroyImmediate(ball);
-        uiManager.UpdadeUI(MyUI.GameplayUI);
-        uiManager.UpdateGameScore(0);
-        uiManager.RemainingBalls(3);
-        interactionObjects.DoInteraction(MyInteractions.AllObjectsBackOn);
-        scoreCounter.DeleteScore();
-        ballsRemain = 3;
-        lives = 3;
-        Time.timeScale = 1;
+        Destroy(ball);
+        StartGame();
     }
     private void AddBallInGame(bool ballcreated)
     {
@@ -136,6 +114,14 @@ public class GameManager : MonoBehaviour
     private void BallLost(bool onDestroy)
     {
         lives--;
+        if (lives == 0)
+        {
+            if (bestScore < currentScore)
+            {
+                bestScore = currentScore;
+            }
+            EndGame();
+        }
         particleManager.PlayParticles(MyParticlesSystems.OffAllParticles);
         interactionObjects.DoInteraction(MyInteractions.AllObjectsBackOn);
         audioManager.PlaySound(MySounds.DestroySound);

@@ -22,14 +22,15 @@ public class Launcher : MonoBehaviour
     private Rigidbody otherBall;
     private Vector3 startBallPosition;
     private Vector3 launchDirection;
-    void Start()
+    public void Start()
     {
         startBallPosition = new Vector3(3.5f, 1.05f, -11.5f);
         isOnLaunchPosition = false;
         launchDirection = new Vector3(0, 0, 100);
+        //otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
     }
 
-    void Update()
+    public void Update()
     {
         GameObject[] ballInGame;
         numberOfBalls = new List<GameObject[]>();
@@ -50,12 +51,7 @@ public class Launcher : MonoBehaviour
 
     public void GiveBall()
     {
-        if (isPlaying == false)
-        {
-            coroutine = StartCoroutine(WaitforStart());
-
-        }
-        if(canCreateBall == true && isPlaying == true)
+        if(canCreateBall)
         {
             otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
             ballCreated?.Invoke(true);
@@ -75,30 +71,24 @@ public class Launcher : MonoBehaviour
     
     public void MultiballAction()
     {
-        StartCoroutine(MyltiballAddBall());
+        StartCoroutine(MultiballAddBall());
     }
-    void OnTriggerEnter(Collider collider)
+    public void OnTriggerEnter(Collider collider)
     {
         if (collider.CompareTag("Ball"))
         {
             isOnLaunchPosition = true;
         }
     }
-    IEnumerator MyltiballAddBall()
+    public IEnumerator MultiballAddBall()
     {
         otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
         particle.PlayParticles(MyParticlesSystems.LaunchSteamParticle);
         otherBall.AddForce(launchDirection * hitForceMax);
         audioManager.PlaySound(MySounds.LauncherSound);
-        yield return new WaitForSecondsRealtime(1);
+        yield return new WaitForSeconds(1);
         otherBall = Instantiate(launchingBall, startBallPosition, Quaternion.identity);
         particle.PlayParticles(MyParticlesSystems.LaunchSteamParticle);
         otherBall.AddForce(launchDirection * hitForceMax);
-    }
-
-    IEnumerator WaitforStart()
-    {
-        yield return new WaitForSecondsRealtime(1);
-        isPlaying = true;
     }
 }

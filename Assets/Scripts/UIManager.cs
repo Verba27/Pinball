@@ -37,7 +37,11 @@ public class UIManager : MonoBehaviour
     private Coroutine coroutine;
     private bool isPlaying = false;
     private bool readInstructions = false;
-    
+    private Quaternion startCameraRotation = Quaternion.Euler(165, 180, -180);
+    private Quaternion finishCameraRotation = Quaternion.Euler(94, 180, -180);
+    private Quaternion startUIRotation = Quaternion.Euler(0, 0, 0);
+    private Quaternion finishUIRotation = Quaternion.Euler(90, 0, 0);
+
     public void UpdadeUI(MyUI doUI)
     {
         switch (doUI)
@@ -117,78 +121,67 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    IEnumerator StartGameCameraPosition()
+    public IEnumerator StartGameCameraPosition()
     {
-        Quaternion startRotation= Quaternion.Euler(165, 180, -180);
-        Quaternion gameRotation = Quaternion.Euler(94, 180, -180);
         float startTime = 0;
         while (startTime < durationCameraRotation)
         {
             startTime += Time.deltaTime;
-            mainCamera.transform.rotation = Quaternion.Lerp(startRotation,gameRotation,(startTime/durationCameraRotation));
+            mainCamera.transform.rotation = Quaternion.Lerp(startCameraRotation,finishCameraRotation,(startTime/durationCameraRotation));
             yield return null;
         }
         new WaitForSecondsRealtime(durationCameraRotation);
         isPlaying = true;
     }
-    IEnumerator EnterSettings()
+    public IEnumerator EnterSettings()
     {
-        Quaternion startRotation = Quaternion.Euler(0, 0, 0);
-        Quaternion gameRotation = Quaternion.Euler(90, 0, 0);
         float startTime = 0;
         while (startTime < durationMenuRotation)
         {
             MainMenuUI.SetActive(true);
             startTime += Time.deltaTime;
-            mainMenuCanvas.transform.rotation = Quaternion.Lerp(startRotation, gameRotation, (startTime / durationMenuRotation));
+            mainMenuCanvas.transform.rotation = Quaternion.Lerp(startUIRotation, finishUIRotation, (startTime / durationMenuRotation));
             SettingsMenuUI.SetActive(true);
-            settingsCanvas.transform.rotation = Quaternion.Lerp(gameRotation, startRotation, (startTime / durationMenuRotation));
+            settingsCanvas.transform.rotation = Quaternion.Lerp(finishUIRotation, startUIRotation, (startTime / durationMenuRotation));
             yield return null;
         }
         MainMenuUI.SetActive(false);
     }
-    IEnumerator ExitSettings()
+    public IEnumerator ExitSettings()
     {
-        
-        Quaternion startRotation = Quaternion.Euler(0, 0, 0);
-        Quaternion gameRotation = Quaternion.Euler(90, 0, 0);
         float startTime = 0;
         while (startTime < durationMenuRotation)
         {
             startTime += Time.deltaTime;
-            settingsCanvas.transform.rotation = Quaternion.Lerp(startRotation, gameRotation, (startTime / durationMenuRotation));
+            settingsCanvas.transform.rotation = Quaternion.Lerp(startUIRotation, finishUIRotation, (startTime / durationMenuRotation));
             MainMenuUI.SetActive(true);
-            mainMenuCanvas.transform.rotation = Quaternion.Lerp(gameRotation, startRotation, (startTime / durationMenuRotation));
+            mainMenuCanvas.transform.rotation = Quaternion.Lerp(finishUIRotation, startUIRotation, (startTime / durationMenuRotation));
             yield return null;
         }
         SettingsMenuUI.SetActive(false);
     }
-    IEnumerator EnterShop()
+    public IEnumerator EnterShop()
     {
-        Quaternion startRotation = Quaternion.Euler(0, 0, 0);
-        Quaternion gameRotation = Quaternion.Euler(90, 0, 0);
         float startTime = 0;
         while (startTime < durationMenuRotation)
         {
             startTime += Time.deltaTime;
-            mainMenuCanvas.transform.rotation = Quaternion.Lerp(startRotation, gameRotation, (startTime / durationMenuRotation));
+            mainMenuCanvas.transform.rotation = Quaternion.Lerp(startUIRotation, finishUIRotation, (startTime / durationMenuRotation));
             ShopMenuUI.SetActive(true);
-            shopCanvas.transform.rotation = Quaternion.Lerp(gameRotation, startRotation, (startTime / durationMenuRotation));
+            shopCanvas.transform.rotation = Quaternion.Lerp(finishUIRotation, startUIRotation, (startTime / durationMenuRotation));
             yield return null;
         }
         MainMenuUI.SetActive(false);
     }
-    IEnumerator ExitShop()
+    public IEnumerator ExitShop()
     {
-        Quaternion startRotation = Quaternion.Euler(0, 0, 0);
-        Quaternion gameRotation = Quaternion.Euler(90, 0, 0);
         float startTime = 0;
         while (startTime < durationMenuRotation)
         {
             startTime += Time.deltaTime;
-            shopCanvas.transform.rotation = Quaternion.Lerp(startRotation, gameRotation, (startTime / durationMenuRotation));
+            shopCanvas.transform.rotation = Quaternion.Lerp(startUIRotation, finishUIRotation, (startTime / durationMenuRotation));
             MainMenuUI.SetActive(true);
-            mainMenuCanvas.transform.rotation = Quaternion.Lerp(gameRotation, startRotation, (startTime / durationMenuRotation));
+            mainMenuCanvas.transform.rotation = Quaternion.Lerp(finishUIRotation, startUIRotation, (startTime / durationMenuRotation));
             yield return null;
         }
         ShopMenuUI.SetActive(false);

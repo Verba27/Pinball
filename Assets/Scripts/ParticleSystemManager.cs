@@ -55,11 +55,11 @@ public class ParticleSystemManager : MonoBehaviour
                 break;
             case MyParticlesSystems.FallSaverLeftParticle:
                 fallSaverLeftParticle.Play();
-                blockerLeft.GetComponent<MeshCollider>().isTrigger = false;
+                blockerLeft.gameObject.SetActive(true);
                 break;
             case MyParticlesSystems.FallSaverRightParticle:
                 fallSaverRightParticle.Play();
-                blockerRight.GetComponent<MeshCollider>().isTrigger = false;
+                blockerRight.gameObject.SetActive(true);
                 break;
             case MyParticlesSystems.ThunderLeft:
                 thunderLeft.Play();
@@ -76,8 +76,8 @@ public class ParticleSystemManager : MonoBehaviour
                 thunderLeft.Stop();
                 thunderMiddle.Stop();
                 thunderRight.Stop();
-                blockerLeft.GetComponent<MeshCollider>().isTrigger = true;
-                blockerRight.GetComponent<MeshCollider>().isTrigger = true;
+                blockerLeft.gameObject.SetActive(false);
+                blockerRight.gameObject.SetActive(false);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(system), system, null);

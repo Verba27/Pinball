@@ -16,7 +16,7 @@ public class FlipperMove : MonoBehaviour
     private Quaternion leftQuaternion;
     private Quaternion startRightQuaternion;
     private Quaternion rightQuaternion;
-    void Start()
+    public void Start()
     {
         startLeftQuaternion = leftFlipperRb.transform.rotation;
         startRightQuaternion = rightFlipperRb.transform.rotation;
@@ -44,8 +44,8 @@ public class FlipperMove : MonoBehaviour
         rightFlipper = true;
         audioManager.PlaySound(MySounds.FlipperSound);
     }
-    
-    void FixedUpdate()
+
+    public void FixedUpdate()
     {
         if (leftFlipper)
         {
